@@ -9,10 +9,9 @@ import java.util.Set;
 
 import org.commonjava.maven.atlas.ident.ref.ProjectVersionRef;
 import org.gradle.api.DefaultTask;
-import org.gradle.api.Project;
 import org.gradle.api.tasks.TaskAction;
 import org.jboss.gm.common.ProjectVersionFactory;
-import org.jboss.gm.common.alignment.AlignmentModel;
+import org.jboss.gm.common.alignment.Project;
 
 /**
  * The actual Gradle task that creates the alignment.json file for the whole project
@@ -30,7 +29,7 @@ public class AlignmentTask extends DefaultTask {
      */
     @TaskAction
     public void perform() {
-        final Project project = getProject();
+        final org.gradle.api.Project project = getProject();
         final String projectName = project.getName();
         System.out.println("Starting alignment task for project " + projectName);
 
@@ -43,8 +42,8 @@ public class AlignmentTask extends DefaultTask {
                                 currentProjectVersion),
                         deps));
 
-        final AlignmentModel alignmentModel = getCurrentAlignmentModel(project);
-        final AlignmentModel.Module correspondingModule = alignmentModel.findCorrespondingModule(projectName);
+        final Project alignmentModel = getCurrentAlignmentModel(project);
+        final Project.Module correspondingModule = alignmentModel.findCorrespondingModule(projectName);
 
         correspondingModule.setNewVersion(alignmentResponse.getNewProjectVersion());
         updateModuleDependencies(correspondingModule, deps, alignmentResponse);
@@ -52,7 +51,7 @@ public class AlignmentTask extends DefaultTask {
         writeUpdatedAlignmentModel(project, alignmentModel);
     }
 
-    private Collection<ProjectVersionRef> getAllProjectDependencies(Project project) {
+    private Collection<ProjectVersionRef> getAllProjectDependencies(org.gradle.api.Project project) {
         final Set<ProjectVersionRef> result = new LinkedHashSet<>();
         project.getConfigurations().all(configuration -> configuration.getAllDependencies().forEach(d -> result.add(
                 ProjectVersionFactory.withGAVAndConfiguration(d.getGroup(), d.getName(), d.getVersion(),
@@ -60,7 +59,7 @@ public class AlignmentTask extends DefaultTask {
         return result;
     }
 
-    private void updateModuleDependencies(AlignmentModel.Module correspondingModule,
+    private void updateModuleDependencies(Project.Module correspondingModule,
             Collection<ProjectVersionRef> allModuleDependencies, AlignmentService.Response alignmentResponse) {
 
         allModuleDependencies.forEach(d -> {
