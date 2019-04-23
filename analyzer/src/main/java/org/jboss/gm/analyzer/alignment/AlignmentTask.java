@@ -9,6 +9,7 @@ import java.util.Set;
 
 import org.commonjava.maven.atlas.ident.ref.ProjectVersionRef;
 import org.gradle.api.DefaultTask;
+import org.gradle.api.Project;
 import org.gradle.api.tasks.TaskAction;
 import org.jboss.gm.common.ProjectVersionFactory;
 import org.jboss.gm.common.alignment.AlignedProject;
@@ -30,7 +31,7 @@ public class AlignmentTask extends DefaultTask {
      */
     @TaskAction
     public void perform() {
-        final org.gradle.api.Project project = getProject();
+        final Project project = getProject();
         final String projectName = project.getName();
         System.out.println("Starting alignment task for project " + projectName);
 
@@ -52,7 +53,7 @@ public class AlignmentTask extends DefaultTask {
         writeUpdatedAlignmentModel(project, alignmentModel);
     }
 
-    private Collection<ProjectVersionRef> getAllProjectDependencies(org.gradle.api.Project project) {
+    private Collection<ProjectVersionRef> getAllProjectDependencies(Project project) {
         final Set<ProjectVersionRef> result = new LinkedHashSet<>();
         project.getConfigurations().all(configuration -> configuration.getAllDependencies().forEach(d -> result.add(
                 ProjectVersionFactory.withGAVAndConfiguration(d.getGroup(), d.getName(), d.getVersion(),
