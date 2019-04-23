@@ -11,8 +11,8 @@ import org.commonjava.maven.atlas.ident.ref.ProjectVersionRef;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.TaskAction;
 import org.jboss.gm.common.ProjectVersionFactory;
+import org.jboss.gm.common.alignment.AlignedProject;
 import org.jboss.gm.common.alignment.Module;
-import org.jboss.gm.common.alignment.Project;
 
 /**
  * The actual Gradle task that creates the alignment.json file for the whole project
@@ -43,7 +43,7 @@ public class AlignmentTask extends DefaultTask {
                                 currentProjectVersion),
                         deps));
 
-        final Project alignmentModel = getCurrentAlignmentModel(project);
+        final AlignedProject alignmentModel = getCurrentAlignmentModel(project);
         final Module correspondingModule = alignmentModel.findCorrespondingModule(projectName);
 
         correspondingModule.setVersion(alignmentResponse.getNewProjectVersion());
