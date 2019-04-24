@@ -5,6 +5,7 @@ import static org.jboss.gm.common.alignment.AlignmentUtils.writeUpdatedAlignment
 
 import java.util.Collection;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.commonjava.maven.atlas.ident.ref.ProjectVersionRef;
@@ -16,6 +17,8 @@ import org.jboss.gm.common.ProjectVersionFactory;
 import org.jboss.gm.common.alignment.AlignmentModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import io.spring.gradle.dependencymanagement.dsl.DependencyManagementExtension;
 
 /**
  * The actual Gradle task that creates the alignment.json file for the whole project
@@ -69,6 +72,48 @@ public class AlignmentTask extends DefaultTask {
                                         configuration.getName()));
                     }
                 }));
+        try {
+            // Horrible Things
+            //
+            // Trying to figure out how to access "managed dependencies" that should be aligned. These are probably:
+            // 1. imported BOMs
+            // 2. explicit managed deps
+            //
+            // Is it possible to read these data directly from build file?
+
+            Object dmObject = project.getExtensions().getByName("dependencyManagement");
+            dmObject.getClass().getClassLoader();
+
+            ClassLoader gradleClassLoader = Thread.currentThread().getContextClassLoader();
+            Thread.currentThread().setContextClassLoader(dmObject.getClass().getClassLoader());
+
+            try {
+                try {
+                    Thread.currentThread().getContextClassLoader()
+                            .loadClass("io.spring.gradle.dependencymanagement.dsl.DependencyManagementExtension");
+                } catch (ClassNotFoundException e) {
+                    log.error("CNF", e);
+                }
+                DependencyManagementExtension dependencyManagement = (DependencyManagementExtension) dmObject;
+
+                // this contains all the stuff from BOMs (transitive) and explicit managed dependencies
+                Map<String, String> managedVersions = dependencyManagement.getManagedVersions();
+
+                // closed API
+                // managed dependencies
+//                dependencyManagement.dependencyManagementContainer.getGlobalDependencyManagement().getManagedDependencies();
+                // imported BOMs
+//                dependencyManagement.dependencyManagementContainer.getGlobalDependencyManagement().importedBoms;
+            } finally {
+                // return the original class loader
+                Thread.currentThread().setContextClassLoader(gradleClassLoader);
+            }
+
+        } catch (Throwable t) {
+            t.printStackTrace();
+            log.error("class loading error", t);
+            throw t;
+        }
         return result;
     }
 

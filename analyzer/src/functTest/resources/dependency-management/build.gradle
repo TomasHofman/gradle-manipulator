@@ -1,0 +1,37 @@
+/*buildscript {
+    repositories {
+        maven { url 'https://repo.spring.io/plugins-snapshot' }
+    }
+    dependencies {
+        classpath 'io.spring.gradle:dependency-management-plugin:1.0.7.RELEASE'
+    }
+}*/
+
+plugins {
+    // including this plugin directly instead of by an init script, which allows to use the freshly build version
+    id 'org.jboss.gm.analyzer'
+    id 'java'
+    id 'io.spring.dependency-management' version '1.0.7.RELEASE'
+}
+
+sourceCompatibility = 1.8
+
+
+repositories {
+    mavenCentral()
+}
+
+dependencyManagement {
+    imports {
+        mavenBom 'org.jboss.spec:jboss-javaee-6.0:3.0.2.Final'
+    }
+    dependencies {
+        dependency 'org.hibernate:hibernate-core:5.3.7.Final'
+    }
+}
+
+dependencies {
+//    compile "org.jboss.bom:jboss-javaee-6.0:3.0.2.Final"
+    compile group: 'javax.activation', name: 'activation' // controlled by mavenBom
+    compile group: 'org.hibernate', name: 'hibernate-core' // managed dependency
+}

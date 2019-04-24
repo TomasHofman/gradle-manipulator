@@ -19,6 +19,7 @@ dependencies {
     compile("org.apache.commons:commons-configuration2:2.4")
     compile("commons-beanutils:commons-beanutils:1.9.3")
     compile("org.slf4j:slf4j-simple:1.7.26")
+    compile( "io.spring.gradle:dependency-management-plugin:1.0.7.RELEASE")
     testCompile("junit:junit:4.12")
     testCompile("org.assertj:assertj-core:3.12.2")
     testCompile("org.mockito:mockito-core:2.27.0")
