@@ -4,7 +4,7 @@ pluginManagement {
             url = uri("https://plugins.gradle.org/m2/")
         }
         maven {
-            url = uri("https://indy-proxy.newcastle-stage.svc.cluster.local/m2/")
+            url = uri(System.getenv("https_proxy") + "/m2/")
         }
     }
 }
