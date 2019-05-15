@@ -2,18 +2,18 @@ import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import java.text.SimpleDateFormat
 import java.util.*
 
-buildscript {
+/*buildscript {
     repositories {
         maven {
             url = uri("https://indy-proxy.newcastle-stage.svc.cluster.local/m2/")
         }
     }
-    /*dependencies {
+    dependencies {
         classpath("com.diffplug.spotless:spotless-plugin-gradle:3.21.0")
         classpath("com.github.jengelman.gradle.plugins:shadow:5.0.0")
         classpath("gradle.plugin.net.nemerosa:versioning:2.8.2")
-    }*/
-}
+    }
+}*/
 
 plugins {
     java
