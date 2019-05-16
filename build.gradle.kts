@@ -107,6 +107,20 @@ subprojects {
                     artifact(javadocJar.get())
                 }
             }
+            repositories {
+                if (System.getenv("AProxDeployUrl") != null) {
+                    maven {
+                        url = uri(System.getenv("AProxDeployUrl"))
+                        credentials(HttpHeaderCredentials::class) {
+                            name = "Authorization"
+                            value = "Bearer " + System.getenv("accessToken")
+                        }
+                        authentication {
+                            create("header", HttpHeaderAuthentication::class)
+                        }
+                    }
+                }
+            }
         }
     }
 

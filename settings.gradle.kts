@@ -3,8 +3,10 @@ pluginManagement {
         maven {
             url = uri("https://plugins.gradle.org/m2/")
         }
-        maven {
-            url = uri(System.getenv("AProxDependencyUrl"))
+        if (System.getenv("AProxDependencyUrl") != null) {
+            maven {
+                url = uri(System.getenv("AProxDependencyUrl"))
+            }
         }
     }
 }
