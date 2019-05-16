@@ -8,6 +8,13 @@
         }
     }
 }*/
+pluginManagement {
+    repositories {
+        maven {
+            url = uri(System.getProperty("maven.repo.url"))
+        }
+    }
+}
 rootProject.name = "gradle-manipulator"
 include("analyzer")
 include("manipulation")
