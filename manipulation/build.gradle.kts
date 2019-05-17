@@ -40,4 +40,4 @@ val functionalTest = task<Test>("functionalTest") {
     mustRunAfter(tasks["test"])
 }
 
-tasks.check { dependsOn(functionalTest) }
+tasks.get("check").dependsOn(functionalTest)

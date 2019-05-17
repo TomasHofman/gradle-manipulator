@@ -90,7 +90,7 @@ subprojects {
 
         val sourcesJar by tasks.registering(Jar::class) {
             classifier = "sources"
-            from(sourceSets.main.get().allSource)
+            from(project.sourceSets.get("main").allSource)
         }
 
         val javadocJar by tasks.registering(Jar::class) {
