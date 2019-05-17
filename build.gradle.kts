@@ -18,7 +18,7 @@ import java.util.*
 plugins {
     java
     id("com.diffplug.gradle.spotless") version "3.21.0"
-    id("com.github.johnrengelman.shadow") version "5.0.0"
+    id("com.github.johnrengelman.shadow") version "4.0.4"
     id("net.nemerosa.versioning") version "2.8.2"
 }
 
