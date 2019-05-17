@@ -1,24 +1,11 @@
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+//import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import java.text.SimpleDateFormat
 import java.util.*
-
-/*buildscript {
-    repositories {
-        maven {
-            url = uri("https://indy-proxy.newcastle-stage.svc.cluster.local/m2/")
-        }
-    }
-    dependencies {
-        classpath("com.diffplug.spotless:spotless-plugin-gradle:3.21.0")
-        classpath("com.github.jengelman.gradle.plugins:shadow:5.0.0")
-        classpath("gradle.plugin.net.nemerosa:versioning:2.8.2")
-    }
-}*/
 
 plugins {
     java
     id("com.diffplug.gradle.spotless") version "3.21.0"
-    id("com.github.johnrengelman.shadow") version "5.0.0"
+//    id("com.github.johnrengelman.shadow") version "5.0.0"
     id("net.nemerosa.versioning") version "2.8.2"
 }
 
@@ -75,6 +62,7 @@ subprojects {
         // have been explicitly declared with the shadow configuration
         configurations.get("compile").dependencies.remove(dependencies.gradleApi())
 
+        /*
         // make build task depend on shadowJar
         val build: DefaultTask by tasks
         val shadowJar = tasks["shadowJar"] as ShadowJar
@@ -87,6 +75,7 @@ subprojects {
                 exclude(dependency("org.slf4j:slf4j-api:1.7.25"))
             }
         }
+        */
 
         val sourcesJar by tasks.registering(Jar::class) {
             classifier = "sources"
@@ -101,8 +90,9 @@ subprojects {
         // configure publishing of the shadowJar
         configure<PublishingExtension> {
             publications {
-                create<MavenPublication>("shadow") {
-                    project.shadow.component(this)
+                create<MavenPublication>("maven") {
+//                    project.shadow.component(this)
+                    from(components["java"])
                     artifact(sourcesJar.get())
                     artifact(javadocJar.get())
                 }
