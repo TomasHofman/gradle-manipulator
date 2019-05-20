@@ -124,17 +124,17 @@ subprojects {
                     maven {
                         url = uri(deployUrl)
                         if (accessToken != null) {
-                            credentials {
+                            /*credentials {
                                 username = buildContentId + "+tracking"
                                 password = accessToken
-                            }
-                            /*credentials(HttpHeaderCredentials::class) {
+                            }*/
+                            credentials(HttpHeaderCredentials::class) {
                                 name = "Authorization"
                                 value = "Bearer " + accessToken
                             }
                             authentication {
                                 create("header", HttpHeaderAuthentication::class)
-                            }*/
+                            }
                         }
                     }
                 }
