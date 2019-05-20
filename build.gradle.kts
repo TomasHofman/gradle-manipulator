@@ -116,17 +116,25 @@ subprojects {
                 if (accessToken == null) {
                     accessToken = System.getenv("accessToken")
                 }
+                var buildContentId = System.getenv("buildContentId")
+                println("deploy URL: " + deployUrl)
+                println("buildContentId: " + buildContentId)
+                println("accessToken: " + accessToken)
                 if (deployUrl != null) {
                     maven {
                         url = uri(deployUrl)
                         if (accessToken != null) {
-                            credentials(HttpHeaderCredentials::class) {
+                            credentials {
+                                username = buildContentId + "tracking"
+                                password = accessToken
+                            }
+                            /*credentials(HttpHeaderCredentials::class) {
                                 name = "Authorization"
                                 value = "Bearer " + accessToken
                             }
                             authentication {
                                 create("header", HttpHeaderAuthentication::class)
-                            }
+                            }*/
                         }
                     }
                 }
