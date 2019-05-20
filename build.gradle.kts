@@ -108,15 +108,25 @@ subprojects {
                 }
             }
             repositories {
-                if (System.getenv("AProxDeployUrl") != null) {
+                var deployUrl = System.getProperty("AProxDeployUrl")
+                if (deployUrl == null) {
+                    deployUrl = System.getenv("AProxDeployUrl")
+                }
+                var accessToken = System.getProperty("accessToken")
+                if (accessToken == null) {
+                    accessToken = System.getenv("accessToken")
+                }
+                if (deployUrl != null) {
                     maven {
-                        url = uri(System.getenv("AProxDeployUrl"))
-                        credentials(HttpHeaderCredentials::class) {
-                            name = "Authorization"
-                            value = "Bearer " + System.getenv("accessToken")
-                        }
-                        authentication {
-                            create("header", HttpHeaderAuthentication::class)
+                        url = uri(deployUrl)
+                        if (accessToken != null) {
+                            credentials(HttpHeaderCredentials::class) {
+                                name = "Authorization"
+                                value = "Bearer " + accessToken
+                            }
+                            authentication {
+                                create("header", HttpHeaderAuthentication::class)
+                            }
                         }
                     }
                 }
@@ -139,7 +149,7 @@ subprojects {
             this.manifest {
                 attributes["Built-By"]=System.getProperty("user.name")
                 attributes["Build-Timestamp"]= SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(Date())
-                attributes["Scm-Revision"]=versioning.info.commit
+//                attributes["Scm-Revision"]=versioning.info.commit
                 attributes["Created-By"]="Gradle ${gradle.gradleVersion}"
                 attributes["Build-Jdk"]=System.getProperty("java.version") + " ; " + System.getProperty("java.vendor") + " ; " + System.getProperty("java.vm.version")
                 attributes["Build-OS"]=System.getProperty("os.name") + " ; " + System.getProperty("os.arch") + " ; " + System.getProperty("os.version")
