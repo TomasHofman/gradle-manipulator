@@ -23,7 +23,7 @@ plugins {
 }
 
 allprojects {
-    version = "0.0.1-redhat-00001"
+    version = "0.0.1.redhat-00001"
 
     repositories {
         mavenCentral()
