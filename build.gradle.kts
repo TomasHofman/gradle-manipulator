@@ -5,8 +5,8 @@ import java.util.*
 plugins {
     java
     id("com.diffplug.gradle.spotless") version "3.21.0"
-    id("com.github.johnrengelman.shadow") version "5.0.0"
-    id("net.nemerosa.versioning") version "2.8.2"
+    id("com.github.johnrengelman.shadow") version "4.0.4"
+    id("org.ajoberstar.grgit") version "3.1.1"
     id("com.gradle.plugin-publish") version "0.10.1"
 }
 
@@ -26,7 +26,6 @@ subprojects {
     extra["pmeVersion"] = "3.6.1"
 
     apply(plugin = "com.diffplug.gradle.spotless")
-    apply(plugin = "net.nemerosa.versioning")
 
     spotless {
         java {
@@ -79,7 +78,7 @@ subprojects {
 
         val sourcesJar by tasks.registering(Jar::class) {
             classifier = "sources"
-            from(sourceSets.main.get().allSource)
+            from(sourceSets.get("main").allSource)
         }
 
         val javadocJar by tasks.registering(Jar::class) {
@@ -97,12 +96,37 @@ subprojects {
                     // we publish the init gradle file to make it easy for tools that use
                     // the plugin to set it up without having to create their own init gradle file
                     if (project.name == "analyzer") {
-                        artifact("${sourceSets.main.get().output.resourcesDir}/analyzer.init.gradle", {
+                        artifact("${sourceSets.get("main").output.resourcesDir}/analyzer.init.gradle", {
                             extension = "init.gradle"
                         })
                     }
                 }
             }
+            repositories {
+                var deployUrl = System.getProperty("AProxDeployUrl")
+                if (deployUrl == null) {
+                    deployUrl = System.getenv("AProxDeployUrl")
+                }
+                var accessToken = System.getProperty("accessToken")
+                if (accessToken == null) {
+                    accessToken = System.getenv("accessToken")
+                }
+                if (deployUrl != null) {
+                    maven {
+                        url = uri(deployUrl)
+                        if (accessToken != null) {
+                            credentials(HttpHeaderCredentials::class) {
+                                name = "Authorization"
+                                value = "Bearer " + accessToken
+                            }
+                            authentication {
+                                create("header", HttpHeaderAuthentication::class)
+                            }
+                        }
+                    }
+                }
+            }
+
         }
     }
 
@@ -116,12 +140,16 @@ subprojects {
         }
     }
 
+    // Retrieve commit id for jar manifest
+    val git = org.ajoberstar.grgit.Grgit.open()
+    val gitCommitId = git.head().id
+
     tasks {
         "jar"(Jar::class) {
             this.manifest {
                 attributes["Built-By"]=System.getProperty("user.name")
                 attributes["Build-Timestamp"]= SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(Date())
-                attributes["Scm-Revision"]=versioning.info.commit
+                attributes["Scm-Revision"]=gitCommitId
                 attributes["Created-By"]="Gradle ${gradle.gradleVersion}"
                 attributes["Build-Jdk"]=System.getProperty("java.version") + " ; " + System.getProperty("java.vendor") + " ; " + System.getProperty("java.vm.version")
                 attributes["Build-OS"]=System.getProperty("os.name") + " ; " + System.getProperty("os.arch") + " ; " + System.getProperty("os.version")

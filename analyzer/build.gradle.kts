@@ -63,7 +63,7 @@ val functionalTest = task<Test>("functionalTest") {
     environment("DA_ENDPOINT_URL", "http://localhost:8089/da/rest/v-1")
 }
 
-tasks.check { dependsOn(functionalTest) }
+tasks.get("check").dependsOn(functionalTest)
 
 tasks {
     //this is done in order to use the proper version in the init gradle files
