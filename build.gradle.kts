@@ -125,7 +125,7 @@ subprojects {
                         url = uri(deployUrl)
                         if (accessToken != null) {
                             credentials {
-                                username = buildContentId + "tracking"
+                                username = buildContentId + "+tracking"
                                 password = accessToken
                             }
                             /*credentials(HttpHeaderCredentials::class) {
